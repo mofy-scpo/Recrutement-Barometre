@@ -98,7 +98,7 @@
     code span.vs { color: #032f62; } /* VerbatimString */
     code span.wa { color: #ff5555; } /* Warning */
   </style>
-  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-5e9cbad7c7fb31c40ae8ab6e2e3257b4.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-3435d7fba77af39fa0a3b075d1a0d004.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -116,7 +116,6 @@
     }
     .reveal .slide:not(.center) {
       height: 100%;
-      overflow-y: auto;
     }
     .reveal .slide.scrollable {
       overflow-y: auto;
@@ -225,7 +224,7 @@ Sciences Po — Direction de la Scolarité
 </div>
 <ul>
 <li><strong>A · Statistiques</strong> — lire &amp; interpréter un graphique</li>
-<li><strong>C · Lecture de code</strong> — R <em>ou</em> Python, 4 niveaux progressifs</li>
+<li><strong>C · Lecture de code</strong> — R <em>ou</em> Python, 3 niveaux progressifs</li>
 <li><strong>E · Qualitatif &amp; restitution</strong></li>
 </ul>
 <div class="callout callout-warning callout-style-simple">
@@ -246,23 +245,70 @@ Sciences Po — Direction de la Scolarité
 </section>
 <section id="lecture-dun-graphique" class="slide level2 scrollable">
 <h2>Lecture d’un graphique</h2>
-<p><strong>Décrivez et interprétez ce graphique</strong>, puis répondez aux questions. Répartition de la satisfaction (/20) — Baromètre 2025 <em>(fictif)</em>.</p>
+<p>Répartition de la satisfaction (/20) — Baromètre 2025 <em>(fictif)</em>.</p>
 <div class="questions">
 <ol type="1">
-<li>De quel <strong>type de graphique</strong> s’agit-il ? Que représentent <strong>la boîte</strong>, <strong>le trait</strong> et <strong>les moustaches</strong> ?</li>
-<li>Lisez sur l’axe la <strong>médiane</strong>, <strong>Q1</strong> et <strong>Q3</strong>. Que vaut l’<strong>écart interquartile</strong>, et qu’exprime-t-il ?</li>
+<li><strong>Quel est ce type de graphique ? Comment le lit-on ?</strong> (que représentent la boîte, le trait et les moustaches ?)</li>
 </ol>
 </div>
-<figure class="boxplot">
+<figure class="boxplot" onclick="this.classList.toggle('zoomed')" title="Cliquer pour agrandir / réduire">
 <svg viewbox="0 0 280 320" role="img" aria-label="Boîte à moustaches verticale de la satisfaction sur 20">
 <text x="22" y="150" font-size="13" fill="#5b6472" text-anchor="middle" transform="rotate(-90 22 150)">Satisfaction /20</text> <line x1="74" y1="20" x2="74" y2="280" stroke="#9aa1b0"></line> <g font-size="13" fill="#5b6472" text-anchor="end"> <line x1="70" y1="280" x2="74" y2="280" stroke="#9aa1b0"></line><text x="64" y="285">0</text> <line x1="70" y1="215" x2="74" y2="215" stroke="#9aa1b0"></line><text x="64" y="220">5</text> <line x1="70" y1="150" x2="74" y2="150" stroke="#9aa1b0"></line><text x="64" y="155">10</text> <line x1="70" y1="85" x2="74" y2="85" stroke="#9aa1b0"></line><text x="64" y="90">15</text> <line x1="70" y1="20" x2="74" y2="20" stroke="#9aa1b0"></line><text x="64" y="25">20</text> </g> <!-- moustache haute (Q3=16 -> max=19) --> <line x1="150" y1="72" x2="150" y2="33" stroke="#11183a" stroke-width="2"></line> <line x1="133" y1="33" x2="167" y2="33" stroke="#11183a" stroke-width="2"></line> <!-- moustache basse (Q1=12 -> min=8) --> <line x1="150" y1="124" x2="150" y2="176" stroke="#11183a" stroke-width="2"></line> <line x1="133" y1="176" x2="167" y2="176" stroke="#11183a" stroke-width="2"></line> <!-- boîte Q1=12 .. Q3=16 --> <rect x="110" y="72" width="80" height="52" fill="rgba(177,5,29,0.15)" stroke="#b1051d" stroke-width="2"></rect> <!-- médiane = 14 --> <line x1="110" y1="98" x2="190" y2="98" stroke="#b1051d" stroke-width="3"></line>
 </svg>
 </figure>
 </section>
-<section id="interprétation" class="slide level2 scrollable">
+<section id="les-indicateurs" class="slide level2 scrollable">
+<h2>Les indicateurs</h2>
+<p>Mêmes données <em>(fictives)</em>, résumées par leurs principaux indicateurs :</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Indicateur</th>
+<th style="text-align: center;">Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Minimum</td>
+<td style="text-align: center;">8</td>
+</tr>
+<tr class="even">
+<td>1ᵉʳ décile (D1)</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr class="odd">
+<td>1ᵉʳ quartile (Q1)</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr class="even">
+<td>Médiane (Q2)</td>
+<td style="text-align: center;">14</td>
+</tr>
+<tr class="odd">
+<td>3ᵉ quartile (Q3)</td>
+<td style="text-align: center;">16</td>
+</tr>
+<tr class="even">
+<td>9ᵉ décile (D9)</td>
+<td style="text-align: center;">18</td>
+</tr>
+<tr class="odd">
+<td>Maximum</td>
+<td style="text-align: center;">19</td>
+</tr>
+</tbody>
+</table>
+<div class="questions">
+<ol start="2" type="1">
+<li><strong>Interprétez chaque valeur</strong> : que signifie-t-elle concrètement pour la satisfaction des étudiants ?</li>
+<li><strong>Interprétez l’écart interquartile</strong> (Q3 − Q1). Que nous dit-il ?</li>
+</ol>
+</div>
+</section>
+<section id="interprétation" class="slide level2">
 <h2>Interprétation</h2>
 <div class="questions">
-<ol start="3" type="1">
+<ol start="4" type="1">
 <li><strong>Moyenne vs médiane</strong> : laquelle se lit directement ici ? Si je vous disais que la <em>moyenne</em> est nettement plus basse que la médiane, qu’en déduiriez-vous sur la distribution ?</li>
 <li><strong>Écart-type</strong> : que mesure-t-il ? Que signifierait un écart-type faible vs élevé pour cette satisfaction ?</li>
 </ol>
@@ -273,7 +319,7 @@ Sciences Po — Direction de la Scolarité
 <h1>C · Lecture de code</h1>
 <p>Lisez chaque script et dites <strong>ce qu’il fait</strong> (ligne par ligne) et ce qu’il produirait. Choisissez votre langage avec les onglets <strong>R / Python</strong>. Rien ne s’exécute — votre explication <em>est</em> la réponse.</p>
 </section>
-<section id="niveau-1-échauffement" class="slide level2">
+<section id="niveau-1-échauffement" class="slide level2 scrollable">
 <h2>Niveau 1 — Échauffement</h2>
 <p><strong>Que renvoie chaque ligne ? Que vaut la moyenne ?</strong></p>
 <div class="panel-tabset">
@@ -294,7 +340,7 @@ Sciences Po — Direction de la Scolarité
 </div>
 </div>
 </section>
-<section id="niveau-2-importer-inspecter-une-base" class="slide level2">
+<section id="niveau-2-importer-inspecter-une-base" class="slide level2 scrollable">
 <h2>Niveau 2 — Importer &amp; inspecter une base</h2>
 <p><strong>Décrivez chaque ligne. Que vous apprend la dernière ?</strong></p>
 <div class="panel-tabset">
@@ -316,7 +362,7 @@ Sciences Po — Direction de la Scolarité
 </div>
 </div>
 </section>
-<section id="niveau-3-filtrer-transformer-agréger" class="slide level2">
+<section id="niveau-3-filtrer-transformer-agréger" class="slide level2 scrollable">
 <h2>Niveau 3 — Filtrer, transformer, agréger</h2>
 <p><strong>Que contient <code>resume</code> ? À quoi sert <code>satisfaction &gt;= 14</code>, et que représente alors <code>mean(satisfait)</code> ?</strong></p>
 <div class="panel-tabset">
@@ -344,41 +390,6 @@ Sciences Po — Direction de la Scolarité
 <span id="cb6-7"><a href=""></a>                    satis_moy<span class="op">=</span>(<span class="st">"satisfaction"</span>, <span class="st">"mean"</span>))</span>
 <span id="cb6-8"><a href=""></a>               .sort_values(<span class="st">"taux_satis"</span>, ascending<span class="op">=</span><span class="va">False</span>))</span>
 <span id="cb6-9"><a href=""></a>resume</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-</section>
-<section id="niveau-4-comparer-deux-vagues" class="slide level2">
-<h2>Niveau 4 — Comparer deux vagues</h2>
-<p><strong>Que calcule ce script ? Que contient <code>evolution</code>, et que fait <code>pivot_wider</code> / <code>unstack</code> ?</strong></p>
-<div class="panel-tabset">
-<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">R</a></li><li><a href="#tabset-4-2">Python</a></li></ul>
-<div class="tab-content">
-<div id="tabset-4-1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(dplyr); <span class="fu">library</span>(tidyr)</span>
-<span id="cb7-2"><a href=""></a>evolution <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb7-3"><a href=""></a>    <span class="fu">mutate</span>(vague_2024, <span class="at">annee =</span> <span class="dv">2024</span>),</span>
-<span id="cb7-4"><a href=""></a>    <span class="fu">mutate</span>(vague_2025, <span class="at">annee =</span> <span class="dv">2025</span>)</span>
-<span id="cb7-5"><a href=""></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-6"><a href=""></a>  <span class="fu">group_by</span>(annee, campus) <span class="sc">%&gt;%</span></span>
-<span id="cb7-7"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">satis_moy =</span> <span class="fu">mean</span>(satisfaction, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-8"><a href=""></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> annee, <span class="at">values_from =</span> satis_moy) <span class="sc">%&gt;%</span></span>
-<span id="cb7-9"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">evolution =</span> <span class="st">`</span><span class="at">2025</span><span class="st">`</span> <span class="sc">-</span> <span class="st">`</span><span class="at">2024</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb7-10"><a href=""></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(evolution))</span>
-<span id="cb7-11"><a href=""></a>evolution</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="tabset-4-2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href=""></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb8-2"><a href=""></a>vague_2024[<span class="st">"annee"</span>] <span class="op">=</span> <span class="dv">2024</span></span>
-<span id="cb8-3"><a href=""></a>vague_2025[<span class="st">"annee"</span>] <span class="op">=</span> <span class="dv">2025</span></span>
-<span id="cb8-4"><a href=""></a>deux <span class="op">=</span> pd.concat([vague_2024, vague_2025])</span>
-<span id="cb8-5"><a href=""></a></span>
-<span id="cb8-6"><a href=""></a>evolution <span class="op">=</span> (deux.groupby([<span class="st">"annee"</span>, <span class="st">"campus"</span>])[<span class="st">"satisfaction"</span>]</span>
-<span id="cb8-7"><a href=""></a>                 .mean()</span>
-<span id="cb8-8"><a href=""></a>                 .unstack(<span class="st">"annee"</span>))</span>
-<span id="cb8-9"><a href=""></a>evolution[<span class="st">"evolution"</span>] <span class="op">=</span> evolution[<span class="dv">2025</span>] <span class="op">-</span> evolution[<span class="dv">2024</span>]</span>
-<span id="cb8-10"><a href=""></a>evolution <span class="op">=</span> evolution.sort_values(<span class="st">"evolution"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb8-11"><a href=""></a>evolution</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
