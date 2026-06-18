@@ -23,10 +23,12 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Installer les packages R
+      - name: Installer les packages R (mis en cache automatiquement)
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
           packages: |
+            any::knitr
+            any::rmarkdown
             any::dplyr
             any::tidyr
             any::plotly
@@ -43,9 +45,12 @@ jobs:
       - name: Indiquer Python à reticulate
         run: echo "RETICULATE_PYTHON=$(which python)" >> "$GITHUB_ENV"
 
-      - name: Rendre et publier sur gh-pages
-        uses: quarto-dev/quarto-actions/publish@v2
+      - name: Rendre la présentation (exécute R + Python)
+        uses: quarto-dev/quarto-actions/render@v2
+
+      - name: Publier sur la branche gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          target: gh-pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: _site
+          clean: true
