@@ -197,12 +197,6 @@ resume
 > On a 3 000 **verbatim** libres en fin de questionnaire. Comment en tirez-vous quelque chose d'exploitable ?
 > Où peut intervenir un outil d'**IA générative**, et avec quelles **précautions** ?
 
-## Restitution
-
-> Vous devez présenter les résultats à une direction **non technique** en 5 minutes.
-> Quels principes de **vulgarisation** et de **datavisualisation** appliquez-vous ?
-> Que mettez-vous en avant, qu'écartez-vous ?
-
 # Merci {.divider background-color="#b1051d"}
 
 Des questions ?
