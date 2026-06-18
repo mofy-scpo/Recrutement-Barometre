@@ -9,76 +9,22 @@ format:
     slide-number: c/t
     progress: true
     history: false
-    lightbox: true
+    scrollable: true
     chalkboard: true
+    highlight-style: github
     footer: "SCIENCES PO · Recrutement — données fictives"
     title-slide-attributes:
       data-background-color: "#b1051d"
-execute:
-  echo: true
-  warning: false
-  message: false
 ---
-
-```{r}
-#| label: setup
-#| include: false
-# --- Génération de données FICTIVES (réalistes), pour que tous les scripts tournent ---
-set.seed(42)
-
-campus_list <- c("Paris", "Reims", "Menton", "Dijon", "Le Havre", "Nancy", "Poitiers")
-niveaux     <- c("L1", "L2", "L3", "M1", "M2")
-n <- 320
-
-# Satisfaction /20 (sans valeur manquante : sert aux calculs et au graphique)
-satisfaction <- round(pmin(20, pmax(0, rnorm(n, mean = 13.5, sd = 3))))
-
-# Date de réponse sur la fenêtre d'enquête (6 oct → 7 nov 2026),
-# avec un pic au lancement et au sprint final.
-debut <- as.Date("2026-10-06")
-jours <- 0:32
-poids <- rep(1, length(jours)); poids[jours <= 3] <- 3; poids[jours >= 28] <- 2.5
-date_reponse <- debut + sample(jours, n, replace = TRUE, prob = poids)
-
-# Âge : distribution réaliste + non-réponses (NA) et quelques codes "999".
-age <- sample(18:26, n, replace = TRUE, prob = c(5, 9, 12, 10, 7, 4, 3, 2, 2))
-age[sample(n, 12)] <- NA     # non-réponse
-age[sample(n, 5)]  <- 999    # code "non renseigné" (piège réaliste de saisie)
-
-# Sexe déclaré, avec non-réponse.
-sexe <- sample(c("F", "H", "Autre", "NR"), n, replace = TRUE,
-               prob = c(0.54, 0.42, 0.02, 0.02))
-
-# Recommandation : liée à la satisfaction de façon probabiliste (pas un simple seuil).
-recommande <- ifelse(runif(n) < plogis((satisfaction - 11) / 2), "Oui", "Non")
-
-barometre <- data.frame(
-  date_reponse, campus = sample(campus_list, n, replace = TRUE),
-  annee_etude = sample(niveaux, n, replace = TRUE),
-  sexe, age, satisfaction, recommande
-)
-write.csv(barometre, "barometre_2025.csv", row.names = FALSE)
-
-# Deux vagues pour la comparaison longitudinale (Bloc C, niveau 4).
-gen_vague <- function(n, mu) data.frame(
-  campus       = sample(campus_list, n, replace = TRUE),
-  satisfaction = round(pmin(20, pmax(0, rnorm(n, mean = mu, sd = 3))))
-)
-vague_2024 <- gen_vague(260, 12.8)
-vague_2025 <- gen_vague(260, 13.6)
-write.csv(vague_2024, "vague_2024.csv", row.names = FALSE)
-write.csv(vague_2025, "vague_2025.csv", row.names = FALSE)
-```
 
 ## Déroulé {.smaller}
 
 ::: {.callout-note appearance="simple"}
 Support d'échange oral. Aucune réponse écrite attendue — on **raisonne à voix haute**.
-Pour les exercices de code, le résultat n'apparaît qu'**après réflexion** (appuyez sur la flèche pour le révéler).
 :::
 
 - **A · Statistiques** — lire & interpréter un graphique
-- **C · Lecture de code** — R *et* Python, 4 niveaux progressifs
+- **C · Lecture de code** — R *ou* Python, 4 niveaux progressifs
 - **E · Qualitatif & restitution**
 
 ::: {.callout-warning appearance="simple"}
@@ -89,56 +35,59 @@ Pour les exercices de code, le résultat n'apparaît qu'**après réflexion** (a
 
 ## Lecture d'un graphique
 
-Voici la distribution de la **satisfaction /20** pour le Baromètre 2025 *(fictif)*.
-Survolez le graphique : les valeurs s'affichent.
+**Décrivez et interprétez ce graphique**, puis répondez aux questions.
+Répartition de la satisfaction (/20) — Baromètre 2025 *(fictif)*.
 
-```{r}
-#| label: boxplot
-#| echo: false
-#| fig-height: 4.6
-library(plotly)
-plot_ly(
-  barometre, x = ~satisfaction, type = "box",
-  name = "Satisfaction /20", boxpoints = FALSE,
-  fillcolor = "rgba(177,5,29,0.15)",
-  line = list(color = "#b1051d", width = 2),
-  hoverinfo = "x"
-) |>
-  layout(
-    xaxis = list(title = "Satisfaction /20", range = c(0, 20), zeroline = FALSE,
-                 gridcolor = "#e6e8ee"),
-    yaxis = list(showticklabels = FALSE),
-    margin = list(l = 10, r = 20, t = 10, b = 45),
-    paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "rgba(0,0,0,0)"
-  ) |>
-  config(displayModeBar = FALSE)
-```
+::: {.questions}
+1. De quel **type de graphique** s'agit-il ? Que représentent **la boîte**, **le trait** et **les moustaches** ?
+2. Lisez sur l'axe la **médiane**, **Q1** et **Q3**. Que vaut l'**écart interquartile**, et qu'exprime-t-il ?
+:::
 
-## Lecture d'un graphique — questions
-
-1. De quel **type de graphique** s'agit-il ? Que représentent **la boîte**, **le trait central** et **les moustaches** ?
-2. En survolant le graphique, relevez la **médiane**, **Q1** et **Q3**. Que vaut l'**écart interquartile**, et qu'exprime-t-il ?
+<figure class="boxplot">
+<svg viewBox="0 0 280 320" role="img" aria-label="Boîte à moustaches verticale de la satisfaction sur 20">
+  <text x="22" y="150" font-size="13" fill="#5b6472" text-anchor="middle" transform="rotate(-90 22 150)">Satisfaction /20</text>
+  <line x1="74" y1="20" x2="74" y2="280" stroke="#9aa1b0"/>
+  <g font-size="13" fill="#5b6472" text-anchor="end">
+    <line x1="70" y1="280" x2="74" y2="280" stroke="#9aa1b0"/><text x="64" y="285">0</text>
+    <line x1="70" y1="215" x2="74" y2="215" stroke="#9aa1b0"/><text x="64" y="220">5</text>
+    <line x1="70" y1="150" x2="74" y2="150" stroke="#9aa1b0"/><text x="64" y="155">10</text>
+    <line x1="70" y1="85"  x2="74" y2="85"  stroke="#9aa1b0"/><text x="64" y="90">15</text>
+    <line x1="70" y1="20"  x2="74" y2="20"  stroke="#9aa1b0"/><text x="64" y="25">20</text>
+  </g>
+  <!-- moustache haute (Q3=16 -> max=19) -->
+  <line x1="150" y1="72" x2="150" y2="33" stroke="#11183a" stroke-width="2"/>
+  <line x1="133" y1="33" x2="167" y2="33" stroke="#11183a" stroke-width="2"/>
+  <!-- moustache basse (Q1=12 -> min=8) -->
+  <line x1="150" y1="124" x2="150" y2="176" stroke="#11183a" stroke-width="2"/>
+  <line x1="133" y1="176" x2="167" y2="176" stroke="#11183a" stroke-width="2"/>
+  <!-- boîte Q1=12 .. Q3=16 -->
+  <rect x="110" y="72" width="80" height="52" fill="rgba(177,5,29,0.15)" stroke="#b1051d" stroke-width="2"/>
+  <!-- médiane = 14 -->
+  <line x1="110" y1="98" x2="190" y2="98" stroke="#b1051d" stroke-width="3"/>
+</svg>
+</figure>
 
 ## Interprétation
 
+::: {.questions}
 3. **Moyenne vs médiane** : laquelle se lit directement ici ? Si je vous disais que la *moyenne* est nettement plus basse que la médiane, qu'en déduiriez-vous sur la distribution ?
 4. **Écart-type** : que mesure-t-il ? Que signifierait un écart-type faible vs élevé pour cette satisfaction ?
+:::
 
 # C · Lecture de code {.divider background-color="#b1051d"}
 
-::: {.callout-tip appearance="simple"}
-Pas besoin d'écrire : **dites ce que fait le script** et ce qu'il produit. Le résultat se révèle ensuite.
-Choisissez votre langage avec les onglets **R / Python**.
-:::
+Lisez chaque script et dites **ce qu'il fait** (ligne par ligne) et ce qu'il produirait.
+Choisissez votre langage avec les onglets **R / Python**. Rien ne s'exécute — votre explication *est* la réponse.
 
 ## Niveau 1 — Échauffement
+
+**Que renvoie chaque ligne ? Que vaut la moyenne ?**
 
 ::: {.panel-tabset}
 
 ### R
 
-```{r}
-#| output-location: fragment
+```r
 print("Hello world")
 x <- c(4, 8, 15, 16, 23, 42)
 mean(x)
@@ -147,26 +96,24 @@ length(x)
 
 ### Python
 
-```{python}
-#| output-location: fragment
+```python
 print("Hello world")
 x = [4, 8, 15, 16, 23, 42]
-print(sum(x) / len(x))
-print(len(x))
+sum(x) / len(x)
+len(x)
 ```
 
 :::
 
-**Question :** que renvoie chaque ligne ? Que vaut la moyenne ?
-
 ## Niveau 2 — Importer & inspecter une base
+
+**Décrivez chaque ligne. Que vous apprend la dernière ?**
 
 ::: {.panel-tabset}
 
 ### R
 
-```{r}
-#| output-location: fragment
+```r
 barometre <- read.csv("barometre_2025.csv")
 dim(barometre)
 head(barometre)
@@ -175,27 +122,25 @@ summary(barometre$satisfaction)
 
 ### Python
 
-```{python}
-#| output-location: fragment
+```python
 import pandas as pd
 barometre = pd.read_csv("barometre_2025.csv")
-print(barometre.shape)
-print(barometre.head())
-print(barometre["satisfaction"].describe())
+barometre.shape
+barometre.head()
+barometre["satisfaction"].describe()
 ```
 
 :::
 
-**Question :** décrivez chaque ligne. Que vous apprend la dernière ?
-
 ## Niveau 3 — Filtrer, transformer, agréger
+
+**Que contient `resume` ? À quoi sert `satisfaction >= 14`, et que représente alors `mean(satisfait)` ?**
 
 ::: {.panel-tabset}
 
 ### R
 
-```{r}
-#| output-location: fragment
+```r
 library(dplyr)
 resume <- barometre %>%
   filter(campus == "Paris") %>%
@@ -210,10 +155,8 @@ resume
 
 ### Python
 
-```{python}
-#| output-location: fragment
+```python
 import pandas as pd
-barometre = pd.read_csv("barometre_2025.csv")
 paris = barometre[barometre["campus"] == "Paris"].copy()
 paris["satisfait"] = paris["satisfaction"] >= 14
 resume = (paris.groupby("annee_etude")
@@ -221,25 +164,21 @@ resume = (paris.groupby("annee_etude")
                     taux_satis=("satisfait", "mean"),
                     satis_moy=("satisfaction", "mean"))
                .sort_values("taux_satis", ascending=False))
-print(resume)
+resume
 ```
 
 :::
 
-**Question :** que contient `resume` ? À quoi sert `satisfait = satisfaction >= 14`, et que représente alors `mean(satisfait)` ?
-
 ## Niveau 4 — Comparer deux vagues
+
+**Que calcule ce script ? Que contient `evolution`, et que fait `pivot_wider` / `unstack` ?**
 
 ::: {.panel-tabset}
 
 ### R
 
-```{r}
-#| output-location: fragment
+```r
 library(dplyr); library(tidyr)
-vague_2024 <- read.csv("vague_2024.csv")
-vague_2025 <- read.csv("vague_2025.csv")
-
 evolution <- bind_rows(
     mutate(vague_2024, annee = 2024),
     mutate(vague_2025, annee = 2025)
@@ -254,11 +193,10 @@ evolution
 
 ### Python
 
-```{python}
-#| output-location: fragment
+```python
 import pandas as pd
-vague_2024 = pd.read_csv("vague_2024.csv"); vague_2024["annee"] = 2024
-vague_2025 = pd.read_csv("vague_2025.csv"); vague_2025["annee"] = 2025
+vague_2024["annee"] = 2024
+vague_2025["annee"] = 2025
 deux = pd.concat([vague_2024, vague_2025])
 
 evolution = (deux.groupby(["annee", "campus"])["satisfaction"]
@@ -266,12 +204,10 @@ evolution = (deux.groupby(["annee", "campus"])["satisfaction"]
                  .unstack("annee"))
 evolution["evolution"] = evolution[2025] - evolution[2024]
 evolution = evolution.sort_values("evolution", ascending=False)
-print(evolution.round(2))
+evolution
 ```
 
 :::
-
-**Question :** que calcule ce script ? Que contient `evolution`, et que fait l'étape `pivot_wider` / `unstack` ?
 
 # E · Qualitatif & restitution {.divider background-color="#b1051d"}
 

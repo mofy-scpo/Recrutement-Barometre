@@ -15,7 +15,10 @@ $presentation-heading-color: $sciencespo-red;
 $presentation-heading-font-weight: 700;
 $presentation-font-size-root: 30px;
 
-$code-block-font-size: 0.78em;
+// Code lisible sur fond clair
+$code-block-font-size: 0.62em;
+$code-block-bg: #f6f8fa;
+$code-block-border-color: #e0e3ea;
 
 /*-- scss:rules --*/
 
@@ -35,29 +38,55 @@ $code-block-font-size: 0.78em;
 
 // Slides "divider" (sections, fond rouge) : texte blanc
 .reveal section.divider h1,
-.reveal section.divider h2 {
-  color: #ffffff;
-  border: none;
-}
+.reveal section.divider h2 { color: #ffffff; border: none; }
 .reveal section.divider { color: #fff; }
-.reveal section.divider .callout { color: $ink; }
+.reveal section.divider strong, .reveal section.divider em { color: #fff; }
+
+// Questions (Bloc A)
+.reveal .questions {
+  background: #faf3f4;
+  border-left: 5px solid $sciencespo-red-2;
+  border-radius: 8px;
+  padding: 0.6em 1em 0.6em 2.2em;
+  margin: 0.8em 0;
+}
+.reveal .questions li { margin-bottom: 0.5em; }
+.reveal .questions strong { color: $sciencespo-red; }
+
+// Boxplot : centré, taille maîtrisée
+.reveal figure.boxplot { text-align: center; margin: 0.6em 0; }
+.reveal figure.boxplot svg { height: 340px; max-height: 46vh; width: auto; }
 
 // Onglets R / Python
 .reveal .panel-tabset [role="tab"] {
-  font-weight: 600;
-  border: none;
-  border-bottom: 3px solid transparent;
+  font-weight: 600; border: none; border-bottom: 3px solid transparent;
 }
 .reveal .panel-tabset [role="tab"][aria-selected="true"] {
-  color: $sciencespo-red;
-  border-bottom-color: $sciencespo-red;
+  color: $sciencespo-red; border-bottom-color: $sciencespo-red;
 }
+
+// Bloc de code : fond clair, bordure douce, texte sombre (pas d'inversion)
+.reveal pre {
+  background: #f6f8fa;
+  border: 1px solid #e0e3ea;
+  border-radius: 8px;
+  box-shadow: none;
+  margin: 0.4em 0;
+}
+.reveal pre code {
+  background: transparent;
+  color: $ink;
+  padding: 0.8em 1em;
+}
+.reveal code { color: $sciencespo-red; }          // code inline
+.reveal pre code { color: $ink; }                  // code en bloc (prioritaire)
+
+// Énoncés en gras au-dessus du code
+.reveal section > p > strong:first-child { color: $sciencespo-red; }
 
 // Numéro de slide + pied de page
 .reveal .footer { color: rgba(177, 5, 29, 0.85); font-weight: 600; letter-spacing: 0.04em; }
 .reveal .slide-number { background: $sciencespo-red; color: #fff; }
-
-// Barre de progression
 .reveal .progress { color: $sciencespo-red-2; height: 4px; }
 
 // Citations (Bloc E)
@@ -68,6 +97,3 @@ $code-block-font-size: 0.78em;
   font-style: normal;
   width: 100%;
 }
-
-// Bloc de code
-.reveal pre code { border-radius: 6px; }
