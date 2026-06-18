@@ -50,6 +50,9 @@ jobs:
       - name: Rendre la présentation (exécute R + Python)
         uses: quarto-dev/quarto-actions/render@v2
 
+      - name: Désactiver Jekyll sur le site (.nojekyll)
+        run: touch _site/.nojekyll
+
       - name: Publier sur la branche gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
