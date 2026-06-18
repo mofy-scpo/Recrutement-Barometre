@@ -6,9 +6,10 @@ du poste de chargé·e d'études quantitatives et qualitatives — enquêtes ét
 Le code **R et Python s'exécute réellement** au rendu (résultats affichés au clic). Le rendu et la
 publication sur GitHub Pages sont **automatisés par GitHub Actions** — aucun rendu manuel nécessaire.
 
-## ⚠️ À lire avant de publier
+- **Dépôt** : <https://github.com/mofy-scpo/Recrutement-Barometre>
+- **Site publié** : <https://mofy-scpo.github.io/Recrutement-Barometre/>
 
-Ce dépôt est destiné à être **public**. En conséquence :
+## ⚠️ À lire — dépôt public
 
 - **Aucune réponse ni barème ne figure dans ce dépôt.** La présentation n'affiche que les questions
   (et les sorties de code, qui sont des résultats de calcul, pas des corrigés).
@@ -19,22 +20,38 @@ Ce dépôt est destiné à être **public**. En conséquence :
 ## Contenu
 
 - `index.qmd` — la présentation (revealjs). Trois blocs : **A** statistiques (boxplot plotly interactif),
-  **C** lecture de code (R + Python, 4 niveaux), **E** qualitatif & restitution.
+  **C** lecture de code (R + Python exécutés, 4 niveaux), **E** qualitatif & restitution.
 - `theme-sciencespo.scss` — thème rouge Sciences Po.
-- `_quarto.yml` — configuration du projet.
-- `.github/workflows/publish.yml` — rendu (R + Python) et publication automatiques sur la branche `gh-pages`.
+- `_quarto.yml` — configuration du projet (sortie de rendu dans `_site`).
+- `requirements.txt` — dépendance Python (`pandas`), utilisée aussi pour le cache pip.
+- `.github/workflows/publish.yml` — rendu (R + Python) puis publication automatique sur la branche `gh-pages`.
 
-## Mise en ligne (une seule fois)
+## Comment ça marche
 
-1. Créez un dépôt **public**, par ex. `test-technique-enquetes`, et poussez-y ce dossier.
-2. À chaque `push` sur `main`, GitHub Actions installe R, Python, Quarto, **exécute le code**, rend la
-   présentation et la publie sur la branche `gh-pages`.
-3. Dans le dépôt : **Settings → Pages → Build and deployment → Source : Deploy from a branch**,
-   branche **`gh-pages`**, dossier **`/ (root)`**. Enregistrez.
-4. L'URL publique apparaît après ~1–2 min :
-   `https://<votre-pseudo>.github.io/test-technique-enquetes/`.
+À chaque `push` sur `main`, GitHub Actions :
 
-> Le premier rendu Actions prend quelques minutes (installation des packages R). Les suivants sont mis en cache.
+1. installe Quarto, R (`knitr`, `rmarkdown`, `dplyr`, `tidyr`, `plotly`, `reticulate`) et Python (`pandas`) ;
+2. **exécute le code** R et Python et **rend** la présentation dans `_site` (`quarto render`) ;
+3. **déploie** `_site` sur la branche **`gh-pages`** (l'action crée la branche au premier passage).
+
+Les dépendances sont **mises en cache** (packages R via `setup-r-dependencies`, pip via `requirements.txt`) :
+seul le premier run installe tout, les suivants restaurent le cache.
+
+## Activation de GitHub Pages (une seule fois)
+
+**Settings → Pages → Build and deployment → Source : Deploy from a branch**,
+branche **`gh-pages`**, dossier **`/ (root)`**, puis *Save*.
+Le site apparaît au bout d'1–2 min sur <https://mofy-scpo.github.io/Recrutement-Barometre/>.
+
+## Mettre le test à jour
+
+Modifiez `index.qmd` (ou le thème), puis :
+
+```bash
+git add -A && git commit -m "maj du test" && git push
+```
+
+Le site se régénère et se republie automatiquement.
 
 ## Utilisation pendant l'entretien
 
@@ -46,8 +63,8 @@ Ce dépôt est destiné à être **public**. En conséquence :
 
 ## Rendu en local (optionnel)
 
-Nécessite [Quarto](https://quarto.org), R (packages `dplyr`, `tidyr`, `plotly`, `reticulate`) et
-Python (`pandas`). Pointez reticulate vers votre Python (`RETICULATE_PYTHON`), puis :
+Nécessite [Quarto](https://quarto.org), R (packages `knitr`, `rmarkdown`, `dplyr`, `tidyr`, `plotly`,
+`reticulate`) et Python (`pandas`). Pointez reticulate vers votre Python (variable `RETICULATE_PYTHON`), puis :
 
 ```bash
 quarto preview index.qmd   # aperçu live
