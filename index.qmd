@@ -9,7 +9,6 @@ format:
     slide-number: c/t
     progress: true
     history: false
-    scrollable: true
     chalkboard: true
     highlight-style: github
     footer: "SCIENCES PO · Recrutement — données fictives"
@@ -24,7 +23,7 @@ Support d'échange oral. Aucune réponse écrite attendue — on **raisonne à v
 :::
 
 - **A · Statistiques** — lire & interpréter un graphique
-- **C · Lecture de code** — R *ou* Python, 4 niveaux progressifs
+- **C · Lecture de code** — R *ou* Python, 3 niveaux progressifs
 - **E · Qualitatif & restitution**
 
 ::: {.callout-warning appearance="simple"}
@@ -33,17 +32,15 @@ Support d'échange oral. Aucune réponse écrite attendue — on **raisonne à v
 
 # A · Statistiques de base {.divider background-color="#b1051d"}
 
-## Lecture d'un graphique
+## Lecture d'un graphique {.scrollable}
 
-**Décrivez et interprétez ce graphique**, puis répondez aux questions.
 Répartition de la satisfaction (/20) — Baromètre 2025 *(fictif)*.
 
 ::: {.questions}
-1. De quel **type de graphique** s'agit-il ? Que représentent **la boîte**, **le trait** et **les moustaches** ?
-2. Lisez sur l'axe la **médiane**, **Q1** et **Q3**. Que vaut l'**écart interquartile**, et qu'exprime-t-il ?
+1. **Quel est ce type de graphique ? Comment le lit-on ?** (que représentent la boîte, le trait et les moustaches ?)
 :::
 
-<figure class="boxplot">
+<figure class="boxplot" onclick="this.classList.toggle('zoomed')" title="Cliquer pour agrandir / réduire">
 <svg viewBox="0 0 280 320" role="img" aria-label="Boîte à moustaches verticale de la satisfaction sur 20">
   <text x="22" y="150" font-size="13" fill="#5b6472" text-anchor="middle" transform="rotate(-90 22 150)">Satisfaction /20</text>
   <line x1="74" y1="20" x2="74" y2="280" stroke="#9aa1b0"/>
@@ -67,11 +64,30 @@ Répartition de la satisfaction (/20) — Baromètre 2025 *(fictif)*.
 </svg>
 </figure>
 
+## Les indicateurs {.scrollable}
+
+Mêmes données *(fictives)*, résumées par leurs principaux indicateurs :
+
+| Indicateur            | Valeur |
+|-----------------------|:------:|
+| Minimum               | 8      |
+| 1ᵉʳ décile (D1)        | 10     |
+| 1ᵉʳ quartile (Q1)      | 12     |
+| Médiane (Q2)          | 14     |
+| 3ᵉ quartile (Q3)       | 16     |
+| 9ᵉ décile (D9)         | 18     |
+| Maximum               | 19     |
+
+::: {.questions}
+2. **Interprétez chaque valeur** : que signifie-t-elle concrètement pour la satisfaction des étudiants ?
+3. **Interprétez l'écart interquartile** (Q3 − Q1). Que nous dit-il ?
+:::
+
 ## Interprétation
 
 ::: {.questions}
-3. **Moyenne vs médiane** : laquelle se lit directement ici ? Si je vous disais que la *moyenne* est nettement plus basse que la médiane, qu'en déduiriez-vous sur la distribution ?
-4. **Écart-type** : que mesure-t-il ? Que signifierait un écart-type faible vs élevé pour cette satisfaction ?
+4. **Moyenne vs médiane** : laquelle se lit directement ici ? Si je vous disais que la *moyenne* est nettement plus basse que la médiane, qu'en déduiriez-vous sur la distribution ?
+5. **Écart-type** : que mesure-t-il ? Que signifierait un écart-type faible vs élevé pour cette satisfaction ?
 :::
 
 # C · Lecture de code {.divider background-color="#b1051d"}
@@ -79,7 +95,7 @@ Répartition de la satisfaction (/20) — Baromètre 2025 *(fictif)*.
 Lisez chaque script et dites **ce qu'il fait** (ligne par ligne) et ce qu'il produirait.
 Choisissez votre langage avec les onglets **R / Python**. Rien ne s'exécute — votre explication *est* la réponse.
 
-## Niveau 1 — Échauffement
+## Niveau 1 — Échauffement {.scrollable}
 
 **Que renvoie chaque ligne ? Que vaut la moyenne ?**
 
@@ -105,7 +121,7 @@ len(x)
 
 :::
 
-## Niveau 2 — Importer & inspecter une base
+## Niveau 2 — Importer & inspecter une base {.scrollable}
 
 **Décrivez chaque ligne. Que vous apprend la dernière ?**
 
@@ -132,7 +148,7 @@ barometre["satisfaction"].describe()
 
 :::
 
-## Niveau 3 — Filtrer, transformer, agréger
+## Niveau 3 — Filtrer, transformer, agréger {.scrollable}
 
 **Que contient `resume` ? À quoi sert `satisfaction >= 14`, et que représente alors `mean(satisfait)` ?**
 
@@ -165,46 +181,6 @@ resume = (paris.groupby("annee_etude")
                     satis_moy=("satisfaction", "mean"))
                .sort_values("taux_satis", ascending=False))
 resume
-```
-
-:::
-
-## Niveau 4 — Comparer deux vagues
-
-**Que calcule ce script ? Que contient `evolution`, et que fait `pivot_wider` / `unstack` ?**
-
-::: {.panel-tabset}
-
-### R
-
-```r
-library(dplyr); library(tidyr)
-evolution <- bind_rows(
-    mutate(vague_2024, annee = 2024),
-    mutate(vague_2025, annee = 2025)
-  ) %>%
-  group_by(annee, campus) %>%
-  summarise(satis_moy = mean(satisfaction, na.rm = TRUE), .groups = "drop") %>%
-  pivot_wider(names_from = annee, values_from = satis_moy) %>%
-  mutate(evolution = `2025` - `2024`) %>%
-  arrange(desc(evolution))
-evolution
-```
-
-### Python
-
-```python
-import pandas as pd
-vague_2024["annee"] = 2024
-vague_2025["annee"] = 2025
-deux = pd.concat([vague_2024, vague_2025])
-
-evolution = (deux.groupby(["annee", "campus"])["satisfaction"]
-                 .mean()
-                 .unstack("annee"))
-evolution["evolution"] = evolution[2025] - evolution[2024]
-evolution = evolution.sort_values("evolution", ascending=False)
-evolution
 ```
 
 :::

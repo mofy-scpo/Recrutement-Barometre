@@ -53,9 +53,17 @@ $code-block-border-color: #e0e3ea;
 .reveal .questions li { margin-bottom: 0.5em; }
 .reveal .questions strong { color: $sciencespo-red; }
 
-// Boxplot : centré, taille maîtrisée
-.reveal figure.boxplot { text-align: center; margin: 0.6em 0; }
-.reveal figure.boxplot svg { height: 340px; max-height: 46vh; width: auto; }
+// Boxplot : centré, taille maîtrisée, cliquable pour zoomer
+.reveal figure.boxplot { text-align: center; margin: 0.6em 0; cursor: zoom-in; }
+.reveal figure.boxplot svg { height: 320px; max-height: 44vh; width: auto; transition: height 0.2s ease; }
+.reveal figure.boxplot.zoomed { cursor: zoom-out; }
+.reveal figure.boxplot.zoomed svg { height: 80vh; max-height: 80vh; }
+
+// Tableau d'indicateurs (Bloc A)
+.reveal table { font-size: 0.8em; margin: 0.4em auto; }
+.reveal table th { background: $sciencespo-red; color: #fff; font-weight: 600; }
+.reveal table td, .reveal table th { padding: 0.25em 0.9em; }
+.reveal table tbody tr:nth-child(even) { background: #faf3f4; }
 
 // Onglets R / Python
 .reveal .panel-tabset [role="tab"] {

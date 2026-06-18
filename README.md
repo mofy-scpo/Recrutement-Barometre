@@ -19,8 +19,8 @@ Actions** — aucun rendu manuel nécessaire.
 
 ## Contenu
 
-- `index.qmd` — la présentation (revealjs). Trois blocs : **A** statistiques (boxplot vertical),
-  **C** lecture de code (R / Python, 4 niveaux), **E** qualitatif & restitution.
+- `index.qmd` — la présentation (revealjs). Trois blocs : **A** statistiques (boxplot vertical + tableau d'indicateurs),
+  **C** lecture de code (R / Python, 3 niveaux), **E** qualitatif & restitution.
 - `theme-sciencespo.scss` — thème rouge Sciences Po.
 - `_quarto.yml` — configuration du projet (sortie de rendu dans `_site`).
 - `.github/workflows/publish.yml` — rendu Quarto puis publication automatique sur la branche `gh-pages`.
