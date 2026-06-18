@@ -1,0 +1,296 @@
+---
+title: "Test technique"
+subtitle: "Chargé·e d'études quantitatives et qualitatives — Enquêtes étudiants"
+author: "Sciences Po — Direction de la Scolarité"
+lang: fr
+format:
+  revealjs:
+    theme: [simple, theme-sciencespo.scss]
+    slide-number: c/t
+    progress: true
+    history: false
+    lightbox: true
+    chalkboard: true
+    footer: "SCIENCES PO · Recrutement — données fictives"
+    title-slide-attributes:
+      data-background-color: "#b1051d"
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+# --- Génération de données FICTIVES (réalistes), pour que tous les scripts tournent ---
+set.seed(42)
+
+campus_list <- c("Paris", "Reims", "Menton", "Dijon", "Le Havre", "Nancy", "Poitiers")
+niveaux     <- c("L1", "L2", "L3", "M1", "M2")
+n <- 320
+
+# Satisfaction /20 (sans valeur manquante : sert aux calculs et au graphique)
+satisfaction <- round(pmin(20, pmax(0, rnorm(n, mean = 13.5, sd = 3))))
+
+# Date de réponse sur la fenêtre d'enquête (6 oct → 7 nov 2026),
+# avec un pic au lancement et au sprint final.
+debut <- as.Date("2026-10-06")
+jours <- 0:32
+poids <- rep(1, length(jours)); poids[jours <= 3] <- 3; poids[jours >= 28] <- 2.5
+date_reponse <- debut + sample(jours, n, replace = TRUE, prob = poids)
+
+# Âge : distribution réaliste + non-réponses (NA) et quelques codes "999".
+age <- sample(18:26, n, replace = TRUE, prob = c(5, 9, 12, 10, 7, 4, 3, 2, 2))
+age[sample(n, 12)] <- NA     # non-réponse
+age[sample(n, 5)]  <- 999    # code "non renseigné" (piège réaliste de saisie)
+
+# Sexe déclaré, avec non-réponse.
+sexe <- sample(c("F", "H", "Autre", "NR"), n, replace = TRUE,
+               prob = c(0.54, 0.42, 0.02, 0.02))
+
+# Recommandation : liée à la satisfaction de façon probabiliste (pas un simple seuil).
+recommande <- ifelse(runif(n) < plogis((satisfaction - 11) / 2), "Oui", "Non")
+
+barometre <- data.frame(
+  date_reponse, campus = sample(campus_list, n, replace = TRUE),
+  annee_etude = sample(niveaux, n, replace = TRUE),
+  sexe, age, satisfaction, recommande
+)
+write.csv(barometre, "barometre_2025.csv", row.names = FALSE)
+
+# Deux vagues pour la comparaison longitudinale (Bloc C, niveau 4).
+gen_vague <- function(n, mu) data.frame(
+  campus       = sample(campus_list, n, replace = TRUE),
+  satisfaction = round(pmin(20, pmax(0, rnorm(n, mean = mu, sd = 3))))
+)
+vague_2024 <- gen_vague(260, 12.8)
+vague_2025 <- gen_vague(260, 13.6)
+write.csv(vague_2024, "vague_2024.csv", row.names = FALSE)
+write.csv(vague_2025, "vague_2025.csv", row.names = FALSE)
+```
+
+## Déroulé {.smaller}
+
+::: {.callout-note appearance="simple"}
+Support d'échange oral. Aucune réponse écrite attendue — on **raisonne à voix haute**.
+Pour les exercices de code, le résultat n'apparaît qu'**après réflexion** (appuyez sur la flèche pour le révéler).
+:::
+
+- **A · Statistiques** — lire & interpréter un graphique
+- **C · Lecture de code** — R *et* Python, 4 niveaux progressifs
+- **E · Qualitatif & restitution**
+
+::: {.callout-warning appearance="simple"}
+**Données fictives.** Tous les chiffres et graphiques sont inventés à des fins d'évaluation et ne correspondent à aucune donnée réelle de Sciences Po ou de l'Université Paris Cité.
+:::
+
+# A · Statistiques de base {.divider background-color="#b1051d"}
+
+## Lecture d'un graphique
+
+Voici la distribution de la **satisfaction /20** pour le Baromètre 2025 *(fictif)*.
+Survolez le graphique : les valeurs s'affichent.
+
+```{r}
+#| label: boxplot
+#| echo: false
+#| fig-height: 4.6
+library(plotly)
+plot_ly(
+  barometre, x = ~satisfaction, type = "box",
+  name = "Satisfaction /20", boxpoints = FALSE,
+  fillcolor = "rgba(177,5,29,0.15)",
+  line = list(color = "#b1051d", width = 2),
+  hoverinfo = "x"
+) |>
+  layout(
+    xaxis = list(title = "Satisfaction /20", range = c(0, 20), zeroline = FALSE,
+                 gridcolor = "#e6e8ee"),
+    yaxis = list(showticklabels = FALSE),
+    margin = list(l = 10, r = 20, t = 10, b = 45),
+    paper_bgcolor = "rgba(0,0,0,0)", plot_bgcolor = "rgba(0,0,0,0)"
+  ) |>
+  config(displayModeBar = FALSE)
+```
+
+## Lecture d'un graphique — questions
+
+1. De quel **type de graphique** s'agit-il ? Que représentent **la boîte**, **le trait central** et **les moustaches** ?
+2. En survolant le graphique, relevez la **médiane**, **Q1** et **Q3**. Que vaut l'**écart interquartile**, et qu'exprime-t-il ?
+
+## Interprétation
+
+3. **Moyenne vs médiane** : laquelle se lit directement ici ? Si je vous disais que la *moyenne* est nettement plus basse que la médiane, qu'en déduiriez-vous sur la distribution ?
+4. **Écart-type** : que mesure-t-il ? Que signifierait un écart-type faible vs élevé pour cette satisfaction ?
+
+# C · Lecture de code {.divider background-color="#b1051d"}
+
+::: {.callout-tip appearance="simple"}
+Pas besoin d'écrire : **dites ce que fait le script** et ce qu'il produit. Le résultat se révèle ensuite.
+Choisissez votre langage avec les onglets **R / Python**.
+:::
+
+## Niveau 1 — Échauffement
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| output-location: fragment
+print("Hello world")
+x <- c(4, 8, 15, 16, 23, 42)
+mean(x)
+length(x)
+```
+
+### Python
+
+```{python}
+#| output-location: fragment
+print("Hello world")
+x = [4, 8, 15, 16, 23, 42]
+print(sum(x) / len(x))
+print(len(x))
+```
+
+:::
+
+**Question :** que renvoie chaque ligne ? Que vaut la moyenne ?
+
+## Niveau 2 — Importer & inspecter une base
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| output-location: fragment
+barometre <- read.csv("barometre_2025.csv")
+dim(barometre)
+head(barometre)
+summary(barometre$satisfaction)
+```
+
+### Python
+
+```{python}
+#| output-location: fragment
+import pandas as pd
+barometre = pd.read_csv("barometre_2025.csv")
+print(barometre.shape)
+print(barometre.head())
+print(barometre["satisfaction"].describe())
+```
+
+:::
+
+**Question :** décrivez chaque ligne. Que vous apprend la dernière ?
+
+## Niveau 3 — Filtrer, transformer, agréger
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| output-location: fragment
+library(dplyr)
+resume <- barometre %>%
+  filter(campus == "Paris") %>%
+  mutate(satisfait = satisfaction >= 14) %>%
+  group_by(annee_etude) %>%
+  summarise(n = n(),
+            taux_satis = mean(satisfait),
+            satis_moy  = mean(satisfaction, na.rm = TRUE)) %>%
+  arrange(desc(taux_satis))
+resume
+```
+
+### Python
+
+```{python}
+#| output-location: fragment
+import pandas as pd
+barometre = pd.read_csv("barometre_2025.csv")
+paris = barometre[barometre["campus"] == "Paris"].copy()
+paris["satisfait"] = paris["satisfaction"] >= 14
+resume = (paris.groupby("annee_etude")
+               .agg(n=("satisfait", "size"),
+                    taux_satis=("satisfait", "mean"),
+                    satis_moy=("satisfaction", "mean"))
+               .sort_values("taux_satis", ascending=False))
+print(resume)
+```
+
+:::
+
+**Question :** que contient `resume` ? À quoi sert `satisfait = satisfaction >= 14`, et que représente alors `mean(satisfait)` ?
+
+## Niveau 4 — Comparer deux vagues
+
+::: {.panel-tabset}
+
+### R
+
+```{r}
+#| output-location: fragment
+library(dplyr); library(tidyr)
+vague_2024 <- read.csv("vague_2024.csv")
+vague_2025 <- read.csv("vague_2025.csv")
+
+evolution <- bind_rows(
+    mutate(vague_2024, annee = 2024),
+    mutate(vague_2025, annee = 2025)
+  ) %>%
+  group_by(annee, campus) %>%
+  summarise(satis_moy = mean(satisfaction, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(names_from = annee, values_from = satis_moy) %>%
+  mutate(evolution = `2025` - `2024`) %>%
+  arrange(desc(evolution))
+evolution
+```
+
+### Python
+
+```{python}
+#| output-location: fragment
+import pandas as pd
+vague_2024 = pd.read_csv("vague_2024.csv"); vague_2024["annee"] = 2024
+vague_2025 = pd.read_csv("vague_2025.csv"); vague_2025["annee"] = 2025
+deux = pd.concat([vague_2024, vague_2025])
+
+evolution = (deux.groupby(["annee", "campus"])["satisfaction"]
+                 .mean()
+                 .unstack("annee"))
+evolution["evolution"] = evolution[2025] - evolution[2024]
+evolution = evolution.sort_values("evolution", ascending=False)
+print(evolution.round(2))
+```
+
+:::
+
+**Question :** que calcule ce script ? Que contient `evolution`, et que fait l'étape `pivot_wider` / `unstack` ?
+
+# E · Qualitatif & restitution {.divider background-color="#b1051d"}
+
+## Focus group
+
+> Comment prépareriez-vous et animeriez-vous un **focus group** d'étudiants ?
+> Combien de participants, et quel rôle pour l'animateur ?
+
+## Analyse des verbatim
+
+> On a 3 000 **verbatim** libres en fin de questionnaire. Comment en tirez-vous quelque chose d'exploitable ?
+> Où peut intervenir un outil d'**IA générative**, et avec quelles **précautions** ?
+
+## Restitution
+
+> Vous devez présenter les résultats à une direction **non technique** en 5 minutes.
+> Quels principes de **vulgarisation** et de **datavisualisation** appliquez-vous ?
+> Que mettez-vous en avant, qu'écartez-vous ?
+
+# Merci {.divider background-color="#b1051d"}
+
+Des questions ?

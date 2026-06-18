@@ -1,0 +1,73 @@
+/*-- scss:defaults --*/
+
+// Palette Sciences Po — rouge
+$sciencespo-red:   #b1051d;
+$sciencespo-red-2: #c8102e;
+$ink:              #1a1f2e;
+
+$font-family-sans-serif: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+$body-color: $ink;
+$body-bg: #ffffff;
+$link-color: $sciencespo-red;
+$selection-bg: rgba(177, 5, 29, 0.25);
+
+$presentation-heading-color: $sciencespo-red;
+$presentation-heading-font-weight: 700;
+$presentation-font-size-root: 30px;
+
+$code-block-font-size: 0.78em;
+
+/*-- scss:rules --*/
+
+.reveal h1, .reveal h2 { letter-spacing: -0.01em; }
+
+// Filet rouge sous les titres de slides de contenu
+.reveal .slides section:not(.divider):not(#title-slide) > h2:first-child {
+  border-bottom: 3px solid $sciencespo-red-2;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.8rem;
+}
+
+// Slide de titre (fond rouge)
+#title-slide .title { color: #fff; font-size: 2.4em; }
+#title-slide .subtitle { color: #ffe3e7; font-style: italic; }
+#title-slide .author, #title-slide .quarto-title-affiliation { color: rgba(255,255,255,0.9); }
+
+// Slides "divider" (sections, fond rouge) : texte blanc
+.reveal section.divider h1,
+.reveal section.divider h2 {
+  color: #ffffff;
+  border: none;
+}
+.reveal section.divider { color: #fff; }
+.reveal section.divider .callout { color: $ink; }
+
+// Onglets R / Python
+.reveal .panel-tabset [role="tab"] {
+  font-weight: 600;
+  border: none;
+  border-bottom: 3px solid transparent;
+}
+.reveal .panel-tabset [role="tab"][aria-selected="true"] {
+  color: $sciencespo-red;
+  border-bottom-color: $sciencespo-red;
+}
+
+// Numéro de slide + pied de page
+.reveal .footer { color: rgba(177, 5, 29, 0.85); font-weight: 600; letter-spacing: 0.04em; }
+.reveal .slide-number { background: $sciencespo-red; color: #fff; }
+
+// Barre de progression
+.reveal .progress { color: $sciencespo-red-2; height: 4px; }
+
+// Citations (Bloc E)
+.reveal blockquote {
+  border-left: 5px solid $sciencespo-red-2;
+  background: #faf3f4;
+  padding: 0.8em 1em;
+  font-style: normal;
+  width: 100%;
+}
+
+// Bloc de code
+.reveal pre code { border-radius: 6px; }

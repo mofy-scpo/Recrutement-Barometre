@@ -1,0 +1,21 @@
+# Ne jamais publier la grille d'évaluation / les corrigés dans ce dépôt public.
+GRILLE-EVALUATION*.md
+*corrige*
+*correction*
+*reponses*
+
+# Sorties de rendu Quarto (régénérées par GitHub Actions)
+/_site/
+/.quarto/
+/index.html
+/index_files/
+*_files/
+*_cache/
+
+# Données fictives générées au rendu
+barometre_2025.csv
+vague_2024.csv
+vague_2025.csv
+
+.DS_Store
+Thumbs.db
