@@ -198,5 +198,3 @@ resume
 > Où peut intervenir un outil d'**IA générative**, et avec quelles **précautions** ?
 
 # Merci {.divider background-color="#b1051d"}
-
-Des questions ?
